@@ -184,6 +184,8 @@ public:
     void setMaterialInstanceAt(Instance instance, uint8_t level,
             size_t primitiveIndex, FMaterialInstance const* materialInstance);
     MaterialInstance* getMaterialInstanceAt(Instance instance, uint8_t level, size_t primitiveIndex) const noexcept;
+    VertexBuffer *getVertexBufferAt(Instance instance, uint8_t level, size_t primitiveIndex) const noexcept;
+    IndexBuffer* getIndexBufferAt(Instance instance, uint8_t level, size_t primitiveIndex) const noexcept;
     void setGeometryAt(Instance instance, uint8_t level, size_t primitiveIndex,
             PrimitiveType type, FVertexBuffer* vertices, FIndexBuffer* indices,
             size_t offset, size_t count) noexcept;

@@ -595,6 +595,25 @@ void FRenderableManager::setMaterialInstanceAt(Instance instance, uint8_t level,
         }
     }
 }
+VertexBuffer *FRenderableManager::getVertexBufferAt(Instance instance, uint8_t level, size_t primitiveIndex) const noexcept{
+    if (instance) {
+        const Slice<FRenderPrimitive>& primitives = getRenderPrimitives(instance, level);
+        if (primitiveIndex < primitives.size()) {
+            return const_cast<FVertexBuffer*>(primitives[primitiveIndex].getVertexBuffer());
+        }
+    }
+    return nullptr;
+}
+
+IndexBuffer* FRenderableManager::getIndexBufferAt(Instance instance, uint8_t level, size_t primitiveIndex) const noexcept{
+    if (instance) {
+        const Slice<FRenderPrimitive>& primitives = getRenderPrimitives(instance, level);
+        if (primitiveIndex < primitives.size()) {
+            return const_cast<FIndexBuffer*>(primitives[primitiveIndex].getIndexBuffer());
+        }
+    }
+    return nullptr;
+}
 
 MaterialInstance* FRenderableManager::getMaterialInstanceAt(
         Instance instance, uint8_t level, size_t primitiveIndex) const noexcept {

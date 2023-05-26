@@ -24,6 +24,7 @@
 #include <math/quat.h>
 
 #include <utils/Panic.h>
+#include <map>
 
 namespace filament {
 
@@ -36,6 +37,7 @@ struct VertexBuffer::BuilderDetails {
     uint32_t mVertexCount = 0;
     uint8_t mBufferCount = 0;
     bool mBufferObjectsEnabled = false;
+    std::unordered_map<VertexAttribute,uint8_t> mAttributeIndexMap;
 };
 
 using BuilderType = VertexBuffer;
@@ -92,6 +94,7 @@ VertexBuffer::Builder& VertexBuffer::Builder::attribute(VertexAttribute attribut
         entry.stride = byteStride;
         entry.type = attributeType;
         mImpl->mDeclaredAttributes.set(attribute);
+        mImpl->mAttributeIndexMap[attribute]=bufferIndex;
     } else {
         utils::slog.w << "Ignoring VertexBuffer attribute, the limit of " <<
                 MAX_VERTEX_ATTRIBUTE_COUNT << " attributes has been exceeded" << utils::io::endl;
@@ -143,6 +146,7 @@ FVertexBuffer::FVertexBuffer(FEngine& engine, const VertexBuffer::Builder& build
     std::copy(std::begin(builder->mAttributes), std::end(builder->mAttributes), mAttributes.begin());
 
     mDeclaredAttributes = builder->mDeclaredAttributes;
+    mAttributeIndexMap = builder->mAttributeIndexMap;
     uint8_t const attributeCount = (uint8_t)mDeclaredAttributes.count();
 
     AttributeArray attributeArray;
@@ -209,8 +213,20 @@ void FVertexBuffer::terminate(FEngine& engine) {
     driver.destroyVertexBuffer(mHandle);
 }
 
+size_t FVertexBuffer::getBufferCount() const noexcept{
+    return mBufferCount;
+}
+
 size_t FVertexBuffer::getVertexCount() const noexcept {
     return mVertexCount;
+}
+
+int FVertexBuffer::getAttributeBindPoint(const VertexAttribute& attribute) const noexcept{
+    auto iter=mAttributeIndexMap.find(attribute);
+    if(iter!=mAttributeIndexMap.end()){
+        return iter->second;
+    }
+    return -1;
 }
 
 void FVertexBuffer::setBufferAt(FEngine& engine, uint8_t bufferIndex,
@@ -231,11 +247,25 @@ void FVertexBuffer::setBufferObjectAt(FEngine& engine, uint8_t bufferIndex,
     ASSERT_PRECONDITION(bufferObject->getBindingType() == BufferObject::BindingType::VERTEX,
             "Binding type must be VERTEX.");
     if (bufferIndex < mBufferCount) {
+        mIndexBufferObjectMap[bufferIndex] = bufferObject;
         auto hwBufferObject = bufferObject->getHwHandle();
         engine.getDriverApi().setVertexBufferObject(mHandle, bufferIndex, hwBufferObject);
     } else {
         ASSERT_PRECONDITION(bufferIndex < mBufferCount, "bufferIndex must be < bufferCount");
     }
+}
+
+
+FBufferObject const* FVertexBuffer::getBufferObjectAt(uint8_t bufferIndex) {
+    ASSERT_PRECONDITION(mBufferObjectsEnabled, "Please use setBufferAt()");
+    if (bufferIndex < mBufferCount) {
+        auto iter = mIndexBufferObjectMap.find(bufferIndex);
+        if(iter!=mIndexBufferObjectMap.end())
+            return mIndexBufferObjectMap[bufferIndex];
+    } else {
+        ASSERT_PRECONDITION(bufferIndex < mBufferCount, "bufferIndex must be < bufferCount");
+    }
+    return nullptr;
 }
 
 } // namespace filament

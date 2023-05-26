@@ -707,6 +707,9 @@ public:
      */
     MaterialInstance* getMaterialInstanceAt(Instance instance, size_t primitiveIndex) const noexcept;
 
+    VertexBuffer* getVertexBufferAt(Instance instance, size_t primitiveIndex) const noexcept;
+
+    IndexBuffer* getIndexBufferAt(Instance instance, size_t primitiveIndex) const noexcept;
     /**
      * Changes the geometry for the given primitive.
      *

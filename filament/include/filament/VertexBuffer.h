@@ -166,6 +166,10 @@ public:
      */
     size_t getVertexCount() const noexcept;
 
+    size_t getBufferCount() const noexcept;
+
+    int getAttributeBindPoint(const VertexAttribute& attribute) const noexcept;
+
     /**
      * Asynchronously copy-initializes the specified buffer from the given buffer data.
      *
@@ -194,6 +198,7 @@ public:
      * @param bufferObject The handle to the GPU data that will be used in this buffer slot.
      */
     void setBufferObjectAt(Engine& engine, uint8_t bufferIndex, BufferObject const* bufferObject);
+    BufferObject const *getBufferObjectAt(uint8_t bufferIndex);
 };
 
 } // namespace filament

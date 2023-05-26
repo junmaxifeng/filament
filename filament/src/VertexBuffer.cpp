@@ -24,6 +24,14 @@ size_t VertexBuffer::getVertexCount() const noexcept {
     return downcast(this)->getVertexCount();
 }
 
+size_t VertexBuffer::getBufferCount() const noexcept{
+    return downcast(this)->getBufferCount();
+}
+
+int VertexBuffer::getAttributeBindPoint(const VertexAttribute& attribute) const noexcept{
+    return downcast(this)->getAttributeBindPoint(attribute);
+}
+
 void VertexBuffer::setBufferAt(Engine& engine, uint8_t bufferIndex,
         backend::BufferDescriptor&& buffer, uint32_t byteOffset) {
     downcast(this)->setBufferAt(downcast(engine), bufferIndex, std::move(buffer), byteOffset);
@@ -32,6 +40,10 @@ void VertexBuffer::setBufferAt(Engine& engine, uint8_t bufferIndex,
 void VertexBuffer::setBufferObjectAt(Engine& engine, uint8_t bufferIndex,
         BufferObject const* bufferObject) {
     downcast(this)->setBufferObjectAt(downcast(engine), bufferIndex, downcast(bufferObject));
+}
+
+BufferObject const *VertexBuffer::getBufferObjectAt(uint8_t bufferIndex) {
+   return downcast(this)->getBufferObjectAt(bufferIndex);
 }
 
 } // namespace filament

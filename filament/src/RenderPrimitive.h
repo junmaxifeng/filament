@@ -54,6 +54,8 @@ public:
     AttributeBitset getEnabledAttributes() const noexcept { return mEnabledAttributes; }
     uint16_t getBlendOrder() const noexcept { return mBlendOrder; }
     bool isGlobalBlendOrderEnabled() const noexcept { return mGlobalBlendOrderEnabled; }
+    const FVertexBuffer* getVertexBuffer() const noexcept { return mVertexBuffer; }
+    const FIndexBuffer* getIndexBuffer() const noexcept { return mIndexBuffer; }
 
     void setMaterialInstance(FMaterialInstance const* mi) noexcept { mMaterialInstance = mi; }
 
@@ -72,6 +74,8 @@ private:
     uint16_t mBlendOrder = 0;
     bool mGlobalBlendOrderEnabled = false;
     backend::PrimitiveType mPrimitiveType = backend::PrimitiveType::TRIANGLES;
+    FVertexBuffer *mVertexBuffer = nullptr;
+    FIndexBuffer *mIndexBuffer = nullptr;
     UTILS_UNUSED uint8_t reserved[4] = {};
 };
 

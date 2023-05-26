@@ -28,6 +28,7 @@
 #include <utils/compiler.h>
 
 #include <array>
+#include <unordered_map>
 #include <type_traits>
 
 namespace filament {
@@ -49,6 +50,10 @@ public:
 
     size_t getVertexCount() const noexcept;
 
+    size_t getBufferCount() const noexcept;
+
+    int getAttributeBindPoint(const VertexAttribute& attribute) const noexcept;
+
     AttributeBitset getDeclaredAttributes() const noexcept {
         return mDeclaredAttributes;
     }
@@ -60,6 +65,8 @@ public:
     void setBufferObjectAt(FEngine& engine, uint8_t bufferIndex,
             FBufferObject const * bufferObject);
 
+    FBufferObject const *getBufferObjectAt(uint8_t bufferIndex);
+
 private:
     friend class VertexBuffer;
 
@@ -70,6 +77,8 @@ private:
     VertexBufferHandle mHandle;
     std::array<AttributeData, backend::MAX_VERTEX_ATTRIBUTE_COUNT> mAttributes;
     std::array<BufferObjectHandle, backend::MAX_VERTEX_BUFFER_COUNT> mBufferObjects;
+    std::unordered_map<VertexAttribute,uint8_t> mAttributeIndexMap;
+    std::unordered_map<uint8_t,FBufferObject const*> mIndexBufferObjectMap;
     AttributeBitset mDeclaredAttributes;
     uint32_t mVertexCount = 0;
     uint8_t mBufferCount = 0;

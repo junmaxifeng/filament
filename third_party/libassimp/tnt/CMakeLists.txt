@@ -155,6 +155,7 @@ set(SRCS
     ${SRC_DIR}/code/PostProcessing/MakeVerboseFormat.cpp
     ${SRC_DIR}/code/Material/MaterialSystem.cpp
     ${SRC_DIR}/code/Obj/ObjFileImporter.cpp
+        ${SRC_DIR}/code/Obj/ObjExporter.cpp
     ${SRC_DIR}/code/Obj/ObjFileMtlImporter.cpp
     ${SRC_DIR}/code/Obj/ObjFileParser.cpp
     ${SRC_DIR}/code/PostProcessing/OptimizeGraph.cpp
@@ -245,11 +246,11 @@ add_definitions(
     -DASSIMP_BUILD_NO_X_IMPORTER
     -DASSIMP_BUILD_NO_XX_IMPORTER
     -DASSIMP_BUILD_NO_STEP_IMPORTER
-    -DASSIMP_BUILD_NO_EXPORTER
+#    -DASSIMP_BUILD_NO_EXPORTER
 )
 
 add_definitions(
-    -DASSIMP_BUILD_NO_OWN_ZLIB
+#    -DASSIMP_BUILD_NO_OWN_ZLIB
 )
 
 # specify where our headers are
@@ -259,10 +260,10 @@ include_directories(${SRC_DIR})
 include_directories(${PRIVATE_HDR_DIR})
 
 # we're building a library
-add_library(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
+add_library(${PROJECT_NAME} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 
 if(NOT MSVC)
-    target_compile_options(${TARGET}
+    target_compile_options(${PROJECT_NAME}
         PRIVATE -Wno-deprecated-declarations
         PRIVATE -Wno-deprecated-register
         PRIVATE -Wno-incompatible-pointer-types
@@ -281,22 +282,22 @@ if(NOT MSVC)
         PRIVATE -Wno-deprecated-non-prototype # See https://github.com/madler/zlib/issues/633
     )
 else()
-    target_compile_options(${TARGET} PRIVATE /bigobj)
+    target_compile_options(${PROJECT_NAME} PRIVATE /bigobj)
 endif()
 
 if (NOT WIN32)
-    target_compile_options(${TARGET} PRIVATE -Wno-address-of-packed-member)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-address-of-packed-member)
 elseif(NOT MSVC)
     # Making this option public because the warnings occurs in public headers of libassimp
-    target_compile_options(${TARGET} PUBLIC -Wno-pragma-pack)
+    target_compile_options(${PROJECT_NAME} PUBLIC -Wno-pragma-pack)
     # RapidJSON disables warnings in-code that clang-cl doesnt know about
-    target_compile_options(${TARGET} PRIVATE -Wno-unknown-warning-option)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unknown-warning-option)
 endif()
 
 # specify where the public headers of this library are
-target_include_directories (${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
+target_include_directories (${PROJECT_NAME} PUBLIC ${PUBLIC_HDR_DIR})
 
 # and we're linking against the libraries below, importing their public headers
-target_link_libraries(${TARGET} LINK_PUBLIC z)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC z)
 
-set_target_properties(${TARGET} PROPERTIES FOLDER ThirdParty)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ThirdParty)

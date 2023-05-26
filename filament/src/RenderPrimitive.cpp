@@ -34,8 +34,11 @@ void FRenderPrimitive::init(HwRenderPrimitiveFactory& factory, backend::DriverAp
     mBlendOrder = entry.blendOrder;
 
     if (entry.indices && entry.vertices) {
-        FVertexBuffer* vertexBuffer = downcast(entry.vertices);
-        FIndexBuffer* indexBuffer = downcast(entry.indices);
+        mVertexBuffer = downcast(entry.vertices);
+        mIndexBuffer = downcast(entry.indices);
+
+        FVertexBuffer* vertexBuffer = downcast(mVertexBuffer);
+        FIndexBuffer* indexBuffer = downcast(mIndexBuffer);
 
         AttributeBitset enabledAttributes = vertexBuffer->getDeclaredAttributes();
 
@@ -61,6 +64,8 @@ void FRenderPrimitive::set(HwRenderPrimitiveFactory& factory, backend::DriverApi
         FVertexBuffer* vertices, FIndexBuffer* indices, size_t offset,
         size_t minIndex, size_t maxIndex, size_t count) noexcept {
 
+    mVertexBuffer = vertices;
+    mIndexBuffer = indices;
     AttributeBitset enabledAttributes = vertices->getDeclaredAttributes();
 
     auto const& ebh = vertices->getHwHandle();

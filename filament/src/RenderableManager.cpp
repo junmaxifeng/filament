@@ -102,6 +102,14 @@ MaterialInstance* RenderableManager::getMaterialInstanceAt(
     return downcast(this)->getMaterialInstanceAt(instance, 0, primitiveIndex);
 }
 
+VertexBuffer* RenderableManager::getVertexBufferAt(Instance instance, size_t primitiveIndex) const noexcept{
+    return downcast(this)->getVertexBufferAt(instance, 0, primitiveIndex);
+}
+
+IndexBuffer* RenderableManager::getIndexBufferAt(Instance instance, size_t primitiveIndex) const noexcept{
+    return downcast(this)->getIndexBufferAt(instance, 0, primitiveIndex);
+}
+
 void RenderableManager::setBlendOrderAt(Instance instance, size_t primitiveIndex, uint16_t order) noexcept {
     downcast(this)->setBlendOrderAt(instance, 0, primitiveIndex, order);
 }
